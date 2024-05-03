@@ -1,0 +1,10 @@
+%Plot the spectrum of rectangular pulse with width 10
+% Aayushi Jain
+%2022UCS1606
+clc;
+clear all;
+close all;
+syms t w;
+xt = 1;
+expw = exp(j*w*t);
+x = int(xt*expw, -1, 1); ezplot(x);

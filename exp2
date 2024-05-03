@@ -1,0 +1,16 @@
+%EXP 2
+%Saanvi Aaushi and Padma
+%2022UCS1598 2022UCS1615 2022UCS1609
+clc;
+clear all;
+close all;
+w1=4; %Width of original x(t) A=1; %Amplitude
+t1=-4:0.01:4; %Range
+t0=2; %Time Shift xt_original=A*rectpuls(t1,w1); xt_shifted=A*rectpuls(t1-t0,w1);
+syms t w
+expw=exp(1j*w*t); z_original=int(1*expw,t,-2,2); z_shifted=int(1*expw,t,0,4);
+subplot(2,2,1); plot(t1,xt_original);
+subplot(2,2,3); plot(t1,xt_shifted);
+subplot(2,2,2); ezplot(abs(z_original));
+subplot(2,2,4); ezplot(abs(z_shifted));
+title("time shift")

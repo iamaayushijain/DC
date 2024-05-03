@@ -1,0 +1,16 @@
+%Exp3-Plot the pdf and cdf of exponential dustribution
+%Name-Aayushi Jain
+%Roll No-2022UCS1606
+clc;
+clear all;
+close all;
+x=0:0.01:10;
+mu=2;
+y=exppdf(x,mu);
+subplot(2,1,1)
+plot(x,y);
+title('Pdf of Exponential Distribution')
+z=expcdf(x,mu);
+subplot(2,1,2)
+plot(x,z)
+title('CDF of Exponential Distribution')
