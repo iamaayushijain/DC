@@ -1,0 +1,106 @@
+%Exp-9 Performance comparison of M/M/1 and M/M/c queueing systems
+%Name-Padma Laxmi
+%Roll No-2022UCS1609
+clc;
+clear all;
+close all;
+c=10;
+Mu=10;
+mu=Mu/c;
+lambda=0.5:0.5:10;
+tot_arrivals=10^5;
+[average_packet_latency_mmc,average_Q_waiting_time_mmc]=mmc_Q(lambda,Mu,c,tot_arrivals);
+E_c=1./(1+exp(lambda/mu).*(c-(lambda/mu)).*(lambda/mu).^(-c).*igamma(c,lambda/mu));
+average_packet_latency_mmc_theoretical=(1/mu)+E_c./(Mu-lambda);
+average_Q_waiting_time_mmc_theoretical=E_c./(Mu-lambda);
+average_system_population_mmc_theoretical=(lambda/mu)+(E_c.*lambda)./(Mu-lambda);
+
+%---------------------------------------------------------------
+c=1;
+[average_packet_latency_mm1,average_Q_waiting_time_mm1]=mmc_Q(lambda,Mu,c,tot_arrivals);
+average_packet_latency_mm1_theoretical=1./(Mu-lambda);
+average_Q_waiting_time_mm1_theoretical=lambda./(Mu.*(Mu-lambda));
+average_system_population_mm1_theoretical=lambda./(Mu-lambda);
+%% plotting the results
+figure;
+plot(lambda,average_packet_latency_mmc_theoretical,'Color','b','LineWidth',2);
+hold on;
+grid on;
+box on;
+plot(lambda,average_packet_latency_mmc,'--o','Color','r','LineWidth',2);
+plot(lambda,average_packet_latency_mm1_theoretical,'Color','k','LineWidth',2);
+plot(lambda,average_packet_latency_mm1_theoretical,'--o','Color','g','LineWidth',2);
+ylim([0 5]);
+xlabel('Packet Arrival Rate(No of packets/sec)','FontWeight','bold','FontSize',12,'Interpreter','latex');
+ylabel('Average overall packet latency(sec)','FontWeight','bold','FontSize',12,'Interpreter','latex');
+legend({'Theoretical $M/M/c$','Simulated $M/M/c$','Theoretical $M/M/1$','Simulated $M/M/1$'},'FontWeight','bold','Location','northwest','Interpreter','latex');
+%------------------------------------------------------------------------------------------------------------------
+figure;
+plot(lambda,average_Q_waiting_time_mmc_theoretical,'Color','b','LineWidth',2);
+hold on;
+grid on;
+box on;
+plot(lambda,average_Q_waiting_time_mmc,'--o','Color','r','LineWidth',2);
+plot(lambda,average_Q_waiting_time_mm1_theoretical,'Color','k','LineWidth',2);
+plot(lambda,average_Q_waiting_time_mm1_theoretical,'--o','Color','g','LineWidth',2);
+ylim([0 5]);
+xlabel('Average Arrival Rate(No. of packets/sec)','FontWeight','bold','FontSize',12,'Interpreter','latex');
+ylabel('Average packet queueing latency(sec)','FontWeight','bold','FontSize',12,'Interpreter','latex');
+legend({'Theoretical $M/M/c$','Simulated $M/M/c$','Theoretical $M/M/1$','Simulated $M/M/1$'},'FontWeight','bold','Location','northwest','Interpreter','latex');
+%----------------------------------------------------------------------------
+figure;
+plot(lambda,average_system_population_mmc_theoretical,'Color','b','LineWidth',2);
+hold on;
+grid on;
+box on;
+plot(lambda,average_system_population_mm1_theoretical,'Color','k','LineWidth',2);
+xlabel('Packet Arrival Rate(No. of packets/sec)','FontWeight','bold','FontSize',12,'Interpreter','latex');
+ylabel('Average system population(No. of packets)','FontWeight','bold','FontSize',12,'Interpreter','latex');
+legend({'Theoretical $M/M/c$','Simulated $M/M/c$','Theoretical $M/M/1$','Simulated $M/M/1$'},'FontWeight','bold','Location','northwest','Interpreter','latex');
+%% Function
+function[average_packet_latency,average_Q_waiting_time]=mmc_Q(lambda,Mu,c,tot_arrivals)
+     mu=Mu/c;
+     for k=1:1:size(lambda,2)
+         Lambda=lambda(k);
+         %current packet arrival rate
+         arrive_time_diff=exprnd(1/Lambda,1,tot_arrivals);
+         %random packet inter_arrival times
+         arrive_times=cumsum(arrive_time_diff);
+         %random packet arrival time instants
+         packet=zeros(tot_arrivals,5);
+         server_free_time=zeros(c,1);
+         packet(:,1)=1:tot_arrivals;
+         packets_processed=0;
+         while(packets_processed<tot_arrivals)
+             if(packets_processed==0)
+packets_processed=packets_processed+1;
+                 current_time=arrive_times(1);
+                 server_index=1;
+                 packet(packets_processed,3)=server_index;
+                 start_time=arrive_times(1);
+                 packet(packets_processed,4)=start_time;
+                 finish_time=current_time+exprnd(1/mu);
+                 packet(packets_processed,5)=finish_time;
+                 server_free_time(server_index)=finish_time;
+             else
+                 packets_processed=packets_processed+1;
+                 if(sum(packet(packets_processed,2)>server_free_time))
+                     current_time=packet(packets_processed,2);
+                     [~,server_index]=min(server_free_time);
+                 else
+                     [current_time,server_index]=min(server_free_time);
+                 end
+                 packet(packets_processed,3)=server_index;
+                 start_time=current_time;
+                 packet(packets_processed,4)=start_time;
+                 finish_time=current_time+exprnd(1/mu);
+                 packet(packets_processed,5)=finish_time;
+                 server_free_time(server_index)=finish_time;
+             end
+         end
+         packet_latency=packet(:,5)-packet(:,2);
+         average_packet_latency(k)=mean(packet_latency);
+         packet_Q_wait_time=packet(:,4)-packet(:,2);
+         average_Q_waiting_time(k)=mean(packet_Q_wait_time);
+     end
+end
