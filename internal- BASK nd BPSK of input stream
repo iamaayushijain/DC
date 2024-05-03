@@ -1,0 +1,55 @@
+%Exp- BASK and BPSK of modulated signal for input bit stream 1100101 
+%Name-Meghna Malasi
+% Roll No-2022UCS1611
+
+clc; 
+clear all; 
+close all; 
+bit_stream = [1 1 0 0 1 0 1]; 
+fc = 10; % Carrier frequency 
+fs = 1000; % Sampling frequency 
+Tb = 1;  
+t = 0:1/fs:Tb-1/fs;  
+carrier = sin(2*pi*fc*t); % Carrier signal 
+ 
+% BASK modulation 
+modulated_signal_bask = []; 
+for bit = bit_stream 
+    if bit == 1 
+        modulated_signal_bask = [modulated_signal_bask ones(1, length(t))]; 
+    else 
+        modulated_signal_bask = [modulated_signal_bask zeros(1, length(t))]; 
+    end 
+end 
+ 
+% BPSK modulation 
+modulated_signal_bpsk = []; 
+for bit = bit_stream 
+    if bit == 1 
+        modulated_signal_bpsk = [modulated_signal_bpsk cos(2*pi*fc*t)]; 
+    else 
+        modulated_signal_bpsk = [modulated_signal_bpsk -cos(2*pi*fc*t)]; 
+    end 
+end 
+t_mod = linspace(0, Tb*length(bit_stream), length(modulated_signal_bask)); 
+ 
+% Plot the modulated signals 
+figure; 
+ 
+% BASK Modulated Signal 
+subplot(2, 1, 1); 
+plot(t_mod, modulated_signal_bask, 'b', 'LineWidth', 1.5); 
+title('BASK Modulated Signal'); 
+xlabel('Time (s)'); 
+ylabel('Amplitude'); 
+ylim([-0.1 1.1]); 
+grid on; 
+ 
+% BPSK Modulated Signal 
+subplot(2, 1, 2); 
+plot(t_mod, modulated_signal_bpsk, 'r', 'LineWidth', 1.5); 
+title('BPSK Modulated Signal'); 
+xlabel('Time (s)'); 
+ylabel('Amplitude'); 
+ylim([-1.1 1.1]); 
+grid on
