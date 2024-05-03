@@ -1,0 +1,22 @@
+function [efficiency, throughput] = goBackNARQ(numFrames, windowSize, propDelay, frameSize, bandwidth)
+    % Calculate number of transmissions
+    numTransmissions = numFrames;
+    
+    % Calculate efficiency
+    efficiency = numFrames / (numTransmissions + propDelay);
+    
+    % Calculate throughput
+    throughput = numFrames * frameSize / (numTransmissions * frameSize / bandwidth + propDelay);
+end
+
+% Main script
+numFrames = 1000;
+windowSize = 10;
+propDelay = 0.005; % 5 ms
+frameSize = 1000; % 1000 bits
+bandwidth = 1000000; % 1 Mbps
+
+[efficiency, throughput] = goBackNARQ(numFrames, windowSize, propDelay, frameSize, bandwidth);
+
+disp(['Efficiency: ' num2str(efficiency)]);
+disp(['Throughput: ' num2str(throughput)]);
