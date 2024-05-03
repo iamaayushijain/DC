@@ -1,0 +1,30 @@
+%EXP 2b - frequency shifting
+%Meghna Malasi
+%2022UCS1611
+clc;
+clear all;
+close all;
+w1=4;
+%Width of original x(t)
+A=1; %Amplitude
+t1=-4:0.01:4; %Range
+w0=2;
+xt_original=A*rectpuls(t1,w1);
+xt_shifted=A*rectpuls(t1,w1).*exp(1i*w0*t1);
+syms t w
+expw_original=exp(1j*w*t);
+expw_shifted=exp(1j*(w-w0)*t);
+z_original=int(1*expw_original,t,-2,2);
+z_shifted=int(1*expw_shifted,t,-2,2);
+subplot(2,2,1)
+plot(t1,xt_original);
+title("Original x(t)")
+subplot(2,2,3)
+plot(t1,xt_shifted);
+title("Frequency Shifted x(t)")
+subplot(2,2,2)
+ezplot(abs(z_original));
+title("Magnitude Response")
+subplot(2,2,4)
+ezplot(abs(z_shifted));
+title("Frequency Shift")
