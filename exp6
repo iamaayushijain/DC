@@ -1,0 +1,27 @@
+%Exp- plot BER vs SNR of BPSK over AWGN channel
+%Name-Meghna Malasi 
+%Roll No-2022UCS1611
+clc;
+clear all;
+close all;
+
+N=10^6;
+ip=rand(1,N)>0.5;
+S=2*ip-1;
+n=(1/sqrt(2))*(randn(1,N) + j*randn(1,N));
+SNRDB=0:15;
+for i=1 : length(SNRDB)
+    y= S+10^(-SNRDB(i)/20)*n;
+    iphat=real(y)>0;
+    nerr(i)=size(find(ip-iphat),2);
+end
+simber=nerr/N;
+theoryber=0.5*erfc(sqrt(10.^(SNRDB/10)));
+close all
+figure
+semilogy(SNRDB,theoryber,'b.-');
+hold on
+semilogy(SNRDB,simber,'mx-');
+grid on
+legend('theory','simulation');
+xlabel('SNR(dB)');
