@@ -1,0 +1,42 @@
+% Go-Back-N ARQ MATLAB Implementation
+
+% Parameters
+N = 4; % Window size
+M = 10; % Number of frames to send
+p = 0.1; % Probability of frame corruption
+
+% Simulate frames
+frames = randi([0 1], M, 1);
+
+% Sender
+sendPointer = 1;
+ackPointer = 1;
+while sendPointer <= M
+    % Send frames within window
+    for i = sendPointer:min(sendPointer + N - 1, M)
+        fprintf('Sending frame %d...\n', i);
+        % Simulate channel noise
+        if rand < p
+            fprintf('Frame %d corrupted!\n', i);
+            continue;
+        end
+        % Simulate receiver's acknowledgment
+        fprintf('Frame %d received.\n', i);
+        ackPointer = i + 1;
+    end
+    
+    % Receive acknowledgments
+    for i = sendPointer:ackPointer - 1
+        fprintf('Waiting for acknowledgment for frame %d...\n', i);
+        % Simulate channel noise
+        if rand < p
+            fprintf('ACK for frame %d corrupted!\n', i);
+            continue;
+        end
+        % Simulate sender's acknowledgment reception
+        fprintf('ACK for frame %d received.\n', i);
+        sendPointer = i + 1;
+    end
+end
+
+fprintf('All frames sent and acknowledged successfully.\n');
