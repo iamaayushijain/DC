@@ -1,0 +1,39 @@
+% Include necessary libraries
+rng('default'); % Set random number generator seed
+
+% Define data types
+ll = int64; % Long long integer
+
+% Define function for transmission
+function transmission(i, N, tf, tt)
+    while i <= tf
+        z = 0;
+        for k = i:min(i+N-1, tf)
+            fprintf('Sending Frame %d...\n', k);
+            tt = tt + 1;
+        end
+        for k = i:min(i+N-1, tf)
+            f = randi(2) - 1; % Generate random 0 or 1
+            if ~f
+                fprintf('Acknowledgment for Frame %d...\n', k);
+                z = z + 1;
+            else
+                fprintf('Timeout!! Frame Number : %d Not Received\n', k);
+                fprintf('Retransmitting Window...\n');
+                break;
+            end
+        end
+        fprintf('\n');
+        i = i + z;
+    end
+end
+
+% Main function
+tf = input('Enter the Total number of frames : ');
+N = input('Enter the Window Size : ');
+tt = 0;
+i = 1;
+transmission(i, N, tf, tt);
+fprintf('Total number of frames which were sent and resent are : %d\n', tt);
+
+
