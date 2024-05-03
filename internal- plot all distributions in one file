@@ -1,0 +1,57 @@
+%Exp4-Plot the pdf and cdf of distributions
+%Name-Meghna Malasi
+%Roll No-2022UCS1611
+clc;
+clear all;
+close all;
+N=1000000;
+a=2;
+b=6;
+range=2:0.05:6;
+step=0.05;
+theopdf=1/(b-a).*ones(size(range));
+mu=rand(1,N)*(b-a)+a;
+h=histc(mu,range);
+simulatedpdfuni=h./(sum(h)*step);
+pd1=makedist('Uniform','lower',a,'upper',b);
+cdfuni=cdf(pd1,range);
+subplot(3,2,1)
+plot(range,theopdf,'b-','LineWidth',1);
+hold on
+plot(range,simulatedpdfuni,'m*');
+legend('Theorectical','Simulated')
+title("PDF of Uniform Distribution")
+subplot(3,2,2)
+plot(range,cdfuni)
+title("CDF of Uniform Distribution")
+N=1000000;
+x=randn(1,N);
+mu=mean(x);
+sigma=var(x);
+range=-3:0.01:3;
+step=0.01;
+theopdfnormal=(1/sqrt(2*pi*sigma))*exp(-(range-mu).^2/(2*sigma));
+h=histc(x,range);
+simulatedpdfnormal=h./(sum(h)*step);
+subplot(3,2,3)
+plot(range,theopdfnormal,'b-');
+hold on
+plot(range,simulatedpdfnormal,'m*');
+legend('Theoretical','Simulated')
+mu=0.4;
+sigma=0.9;
+range=-3:0.01:3;
+cdfnormal=normcdf(range,mu,sigma);
+subplot(3,2,4)
+plot(range,cdfnormal)
+title("CDF of Normal Distribution")
+x=0:0.01:10;
+lambda=2;
+y=exppdf(x,lambda);
+subplot(3,2,5)
+plot(x,y);
+title('Pdf of Exponential Distribution')
+z=expcdf(x,lambda);
+subplot(3,2,6)
+plot(x,z)
+title('CDF ,1of Exponential Distribution')
