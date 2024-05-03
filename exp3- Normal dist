@@ -1,0 +1,25 @@
+%EXP 3A- PDF and CDF of Normal distribution
+%Meghna Malasi
+% %2022UCS1611
+clc;
+ clear all;
+ close all;
+ N=1000000;
+ x=randn(1,N);
+ mu=mean(x);
+ sigma=var(x);
+ range=-3:0.01:3;
+ step=0.01;
+ theopdfnormal=(1/sqrt(2*pi*sigma))*exp(-(range-mu).^2/(2*sigma));
+ h=histc(x,range);
+ simulatedpdfnormal=h./(sum(h)*step);
+ cdfnormal=normcdf(range,mu,sigma);
+ subplot(2,1,1)
+ plot(range,theopdfnormal,'b-');
+ hold on
+ plot(range,simulatedpdfnormal,'m*');
+ title("PDF of Normal Distribution")
+ legend('Theoretical','Simulated')
+ subplot(2,1,2)
+ plot(range,cdfnormal);
+ title("CDF of Normal Distribution")
