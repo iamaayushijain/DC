@@ -1,0 +1,36 @@
+%Exp2- Sampling of sum of three continuous time signals
+%Name-Meghna Malasi
+%Roll No-2022UCS1611
+clc;
+clear all;
+close all;
+t=0:0.01:1;
+fm=10;
+Am1=20;
+Am2=30;
+Am3=40;
+x1=Am1*sin(2*pi*fm*t);
+x2=Am2*sin(2*pi*fm*t);
+x3=Am3*sin(2*pi*fm*t);
+x=x1+x2+x3;
+fs=20;
+n=0:1/fs:1;
+xn1=Am1*sin(2*pi*fm*n)
+xn2=Am2*sin(2*pi*fm*n)
+xn3=Am3*sin(2*pi*fm*n);
+xn=xn1+xn2+xn3;
+subplot(2,1,1)
+plot(t,x1,'r',t,x2,'b',t,x3,'g',t,x,'k')
+legend('x1(t)','x2(t)','x3(t)','x(t)')
+subplot(2,1,2)
+stem(n, xn1, 'r');
+hold on;
+stem(n, xn2, 'g');
+stem(n, xn3, 'b');
+stem(n, xn);
+hold off;
+title('Sampled Signals');
+xlabel('Time (s)');
+ylabel('Amplitude');
+legend('x1[n]', 'x2[n]', 'x3[n]', 'x1[n] + x2[n] + x3[n]');
+grid on;
